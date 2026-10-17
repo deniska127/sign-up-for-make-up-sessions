@@ -116,10 +116,19 @@
                 <h3>Заполнение анкеты</h3>
                 <form id="booking-form">
                     <div class="date-info-box">Вы записываетесь на: <b id="selected-date-display"></b></div>
+                    
                     <div class="form-group"><label>ФИО ребенка</label><input type="text" id="child-name" required placeholder="Иванов Иван Иванович"></div>
                     <div class="form-group"><label>ФИО родителя</label><input type="text" id="parent-name" required placeholder="Иванова Мария Петровна"></div>
+                    
+                    <!-- НОВОЕ ПОЛЕ: Желаемая тема -->
+                    <div class="form-group">
+                        <label>Желаемая тема</label>
+                        <input type="text" id="topic" required placeholder="Например: Робототехника, Python">
+                    </div>
+                    
                     <div class="form-group"><label>Телефон</label><input type="tel" id="phone" required placeholder="+7 (___) ___-__-__"></div>
                     <div class="form-group"><label>Email</label><input type="email" id="email" required placeholder="example@mail.ru"></div>
+                    
                     <button type="submit" id="submit-btn" class="submit-btn">Отправить заявку</button>
                     <button type="button" onclick="resetForm()" class="back-btn">← Назад к выбору даты</button>
                 </form>
@@ -137,11 +146,10 @@
 
     <script>
         // !!! ВСТАВЬТЕ СЮДА ВАШ URL ИЗ GOOGLE APPS SCRIPT (заканчивается на /exec) !!!
-        const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzDbJTJwlTxY9RpjKWMODeEFcxJr7qVq8cyANq_ZDR13ikOultUDtOtJT8Q94VJIiGPCg/exec'; 
+        const SCRIPT_URL = ''; 
         
         let selectedDate = null;
 
-        // Функция для красивого вывода времени только на сайте
         function getTimeLabel(displayText) {
             if (displayText.includes("(Сб)")) return displayText + " в 15:00";
             if (displayText.includes("(Вс)")) return displayText + " в 15:30";
@@ -187,7 +195,6 @@
                 btn.className = 'date-btn';
                 if (isFull) btn.disabled = true;
                 
-                // Визуально добавляем время здесь:
                 btn.innerHTML = `
                     <div class="date-title">${getTimeLabel(item.display)}</div>
                     <div class="date-status ${isFull ? 'status-full' : 'status-free'}">
@@ -205,7 +212,6 @@
             selectedDate = dateObj;
             document.getElementById('step-date').style.display = 'none';
             document.getElementById('step-form').classList.remove('state-hidden');
-            // Визуально добавляем время в форму здесь:
             document.getElementById('selected-date-display').innerText = getTimeLabel(selectedDate.display);
         }
 
@@ -220,15 +226,14 @@
             submitBtn.disabled = true;
             submitBtn.innerText = 'Отправка...';
 
-            // ВАЖНО: Здесь отправляется selectedDate.display (БЕЗ времени), 
-            // поэтому в таблицу уйдет исходная строка (например "17 October (Сб)").
             const formData = {
                 date: selectedDate.date,
                 dateDisplay: selectedDate.display, 
                 childName: document.getElementById('child-name').value,
                 parentName: document.getElementById('parent-name').value,
                 phone: document.getElementById('phone').value,
-                email: document.getElementById('email').value
+                email: document.getElementById('email').value,
+                topic: document.getElementById('topic').value // <-- ДОБАВЛЕНО СЮДА
             };
 
             try {
